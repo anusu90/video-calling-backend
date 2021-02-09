@@ -74,15 +74,15 @@ router.post("/login", async (req, res) => {
       let compare = await bcrypt.compare(req.body.password, user.password);
       if (compare == true) {
 
-        let jwtToken = jwt.sign({ user: user }, process.env.RANDOM_KEY_FOR_JWT, { expiresIn: 1800 })
-        res.setHeader('Set-Cookie', cookie.serialize("myAgainJwt3", jwtToken, {
+        let token = jwt.sign({ user: user }, process.env.RANDOM_KEY_FOR_JWT, { expiresIn: 120 })
+        res.setHeader('Set-Cookie', cookie.serialize('myAgainJwt2', token, {
           httpOnly: true,
-          maxAge: 60 * 60 * 24 * 7,
+          maxAge: 60 * 60 * 24 * 7, // 1 week,
           sameSite: "none",
           secure: true
-        }))
+        }));
 
-        res.status(200).json({ message: "login successful" })
+        res.status(200).json(user)
 
       } else {
         res.status(500).json({ message: "Invalid Credentials. Please try again" })
